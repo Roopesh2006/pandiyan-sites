@@ -3,25 +3,204 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-ink-950: #0b0f0d;
+  --color-ink-900: #121a16;
+  --color-ink-800: #1a231e;
+  --color-bone: #efede6;
+  --color-bone-200: #e4e1d8;
+  --color-bone-300: #d6d2c6;
+  --color-brass: #b08d57;
+  --color-brass-bright: #d6b98c;
+  --color-verdigris: #2f5d50;
+  --color-oxblood: #5a1f1f;
+  --color-smoke: #6e6a63;
+
+  /* Legacy names, kept for the admin surface */
+  --color-primary: #121a16;
+  --color-accent: #b08d57;
+  --color-surface: #efede6;
+  --color-surface-dark: #0b0f0d;
+  --color-text-primary: #121a16;
+  --color-text-muted: #6e6a63;
+  --color-success: #2f5d50;
+  --color-border: #d6d2c6;
+  --color-card-bg: #ffffff;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-bone);
+  color: var(--color-ink-900);
+  font-feature-settings: "kern" 1, "liga" 1;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
 }
 
+::selection {
+  background: var(--color-brass);
+  color: var(--color-ink-950);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brass);
+  outline-offset: 3px;
+}
+
+/* Tabular figures for prices and counters */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* The brass thread: one drawn rule, used instead of repeated gold underlines */
+.thread {
+  display: block;
+  height: 1.5px;
+  background: var(--color-brass);
+  transform-origin: left center;
+}
+
+/* Full-bleed sections carry their own field colour */
+.field-ink {
+  background-color: var(--color-ink-950);
+  color: var(--color-bone);
+}
+.field-verdigris {
+  background-color: var(--color-verdigris);
+  color: var(--color-bone);
+}
+.field-bone {
+  background-color: var(--color-bone);
+  color: var(--color-ink-900);
+}
+
+/* Media that reveals through a clip-path on enter */
+.reveal-media {
+  clip-path: inset(0 0 100% 0);
+}
+.reveal-media.is-in {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 900ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/*
+ * Entrance states. Hidden only while `js-motion` is on the root, so a page
+ * whose script never runs still shows every word.
+ */
+html.js-motion [data-reveal="up"] {
+  opacity: 0;
+  transform: translateY(24px);
+}
+html.js-motion [data-reveal="up"].is-in {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 700ms cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0ms),
+    transform 700ms cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0ms);
+}
+html.js-motion [data-reveal="mask"] > span {
+  transform: translateY(110%);
+}
+html.js-motion [data-reveal="mask"].is-in > span {
+  transform: none;
+  transition: transform 900ms cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0ms);
+}
+
+/* Magnetic CTA press */
+.press:active {
+  transform: scale(0.985);
+  transition: transform 120ms ease;
+}
+
+/* Glass: tinted translucent surface, blurred backdrop, hairline edge.
+   Accent surfaces only — never a full page, never over body copy. */
+.glass {
+  background-color: rgb(11 15 13 / 0.46);
+  backdrop-filter: blur(20px) saturate(1.25);
+  -webkit-backdrop-filter: blur(20px) saturate(1.25);
+  border: 1px solid rgb(239 237 230 / 0.14);
+}
+.glass-bone {
+  background-color: rgb(239 237 230 / 0.08);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  border: 1px solid rgb(239 237 230 / 0.16);
+}
+
+/* Skeleton shimmer for data-loading states */
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .skeleton {
+    background-color: #e4e1d8;
+    animation: skeletonPulse 1.6s ease-in-out infinite;
   }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+}
+
+@keyframes skeletonPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Reduced motion: keep content, drop travel */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal-media {
+    clip-path: none !important;
+  }
+  html.js-motion [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  html.js-motion [data-reveal] > span {
+    transform: none !important;
+  }
+}
+
+/* Scrollbar: brass on ink, tone step on bone */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bone-200);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-brass);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brass-deep);
 }

@@ -1,0 +1,24 @@
+{
+  "name": "Pandiyan Sites",
+  "short_name": "Pandiyan Sites",
+  "description": "Premium Real Estate in Tamil Nadu",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1B2B3A",
+  "theme_color": "#C8964D",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["real estate", "property", "business"]
+}
